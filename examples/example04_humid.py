@@ -25,6 +25,8 @@ sht31 = 0x44                                    # 温湿度センサSHT31のI2C�
 from machine import Pin,I2C                     # machineのI2Cを組み込む
 from machine import UART                        # machineからUARTを組み込む
 from utime import sleep                         # μtimeからsleepを組み込む
+import network                                  # ネットワーク通信
+import usocket                                  # μソケット通信
 
 led = Pin("LED", Pin.OUT)                       # Pico W LED用ledを生成
 gnd = Pin(6, Pin.OUT)                           # GP6をSHT31のGNDピンに接続
@@ -60,7 +62,6 @@ while True:                                     # 繰り返し処理
     led.value(1)                                # LEDをONにする
 
     sock = usocket.socket(usocket.AF_INET,usocket.SOCK_DGRAM) # μソケット作成
-    #      ~~~~~~~        ~~~~~~~         ~~~~~~~
     udp_s = device_s + ', ' + temp_s            # 表示用の文字列変数udp
     udp_s += ',' + hum_s
     print('send :', udp_s)                      # 受信データを出力
