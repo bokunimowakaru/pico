@@ -1,5 +1,5 @@
 # coding: utf-8
-# IoT 温度計μ for Raspberry Pi Pico W
+# IoT 温度計μ for Raspberry Pi Pico W [無線LAN対応版]
 # Copyright (c) 2018-2023 Wataru KUNINO
 
 SSID = "1234ABCD"                               # 無線LANアクセスポイント SSID
@@ -25,10 +25,9 @@ wlan.active(True)                               # 無線LANを起動
 wlan.connect(SSID, PASS)                        # 無線LANに接続
 while wlan.status() != 3:                       # 接続待ち
     print('.', end='')                          # 接続中表示
-    led.toggle()
-    sleep(1)
-ifconf = wlan.ifconfig()
-print('\n',ifconf)
+    led.toggle()                                # LEDの点灯／非点灯の反転
+    sleep(1)                                    # 1秒間の待ち時間処理
+print('\n',wlan.ifconfig())                     # 無線LANの状態を表示
 
 while True:                                     # 繰り返し処理
     val = adc.read_u16()                        # ADC値を取得して変数valに代入
