@@ -1,9 +1,6 @@
 # coding: utf-8
-# IoT 温度計μ for MicroPython (よりメモリの節約が可能なusocketを使用)
-# Copyright (c) 2018-2019 Wataru KUNINO
-
-# Error ENOMEM や EADDRINUSE が出た場合はハードウェアリセットを実行してください
-#   machine.reset()
+# IoT 温度計μ for Raspberry Pi Pico W
+# Copyright (c) 2018-2023 Wataru KUNINO
 
 SSID = "1234ABCD"                               # 無線LANアクセスポイント SSID
 PASS = "password"                               # パスワード
@@ -20,16 +17,15 @@ from utime import sleep                         # μtimeからsleepを組み込�
 import network                                  # ネットワーク通信
 import usocket                                  # μソケット通信
 
-led = Pin(25, Pin.OUT)                          # GPIO出力用ledを生成
+led = Pin("LED", Pin.OUT)                       # Pico W LED用ledを生成
 adc = ADC(4)                                    # 温度センサ用adcを生成
 
-wlan = network.WLAN(network.STA_IF)             # Ethernet用のethを生成
-wlan.active(True)                               # Ethernetを起動
-wlan.connect(SSID, PASS)
-while True:
-    if wlan.status() == 3:
-        break
-    print('.', end='')
+wlan = network.WLAN(network.STA_IF)             # 無線LAN用のwlanを生成
+wlan.active(True)                               # 無線LANを起動
+wlan.connect(SSID, PASS)                        # 無線LANに接続
+while wlan.status() != 3:                       # 接続待ち
+    print('.', end='')                          # 接続中表示
+    led.toggle()
     sleep(1)
 ifconf = wlan.ifconfig()
 print('\n',ifconf)
@@ -56,4 +52,14 @@ while True:                                     # 繰り返し処理
     sock.close()                                # ソケットの切断
 
     led.value(0)                                # LEDをOFFにする
-    sleep(5)                                    # 5秒間の待ち時間処理
+    sleep(interval)                             # 送信間隔用の待ち時間処理
+
+'''
+参考文献
+
+Pico W のLED 使用方法
+	https://forums.raspberrypi.com/viewtopic.php?t=336836
+
+Error ENOMEM や EADDRINUSE が出た場合はハードウェアリセットを実行してください
+	machine.reset()
+'''

@@ -1,10 +1,10 @@
-# Raspberry Pi の動作確認 温度を測定し表示する
-# Copyright (c) 2021 Wataru KUNINO
+# Raspberry Pi Pico W の動作確認 温度を測定し表示する
+# Copyright (c) 2021-2023 Wataru KUNINO
 
 from machine import ADC,Pin             # ライブラリmachineのADCを組み込む
 from utime import sleep                 # μtimeからsleepを組み込む
 
-led = Pin(25, Pin.OUT)                  # GPIO出力用インスタンスledを生成
+led = Pin("LED", Pin.OUT)               # Pico W LED用インスタンスledを生成
 adc = ADC(4)                            # 温度センサ用ADCポートadcを生成
 prev = 0                                # 前回の温度値を保持するための変数
 while True:                             # 繰り返し処理

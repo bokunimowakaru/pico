@@ -1,11 +1,11 @@
-# Raspberry Pi Pico の動作確認 Lチカ＋ログ出力表示
+# Raspberry Pi Pico W の動作確認 Lチカ＋ログ出力表示
 # 0.5秒おきにLEDの点灯と消灯を反転する
-# Copyright (c) 2021 Wataru KUNINO
+# Copyright (c) 2021-2023 Wataru KUNINO
 
 from machine import Pin                 # ライブラリmachineのPinを組み込む
 from utime import sleep                 # μtimeからsleepを組み込む
 
-led = Pin(25, Pin.OUT)                  # GPIO出力用インスタンスledを生成
+led = Pin("LED", Pin.OUT)               # Pico W LED用インスタンスledを生成
 
 while True:                             # 繰り返し処理
     b = led.value()                     # 現在のLEDの状態を変数bへ代入

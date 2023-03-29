@@ -12,7 +12,14 @@
 #    GND  #  9   # GP6
 ##############################
 
-ble_ad_id = 'CD00'                      # BLEビーコン用ID(先頭2バイト)
+SSID = "1234ABCD"                               # 無線LANアクセスポイント SSID
+PASS = "password"                               # パスワード
+
+udp_to = '255.255.255.255'                      # UDPブロードキャスト
+udp_port = 1024                                 # UDPポート番号
+device_s = 'humid_3'                            # デバイス識別名
+interval = 10                                   # 送信間隔（秒）
+
 sht31 = 0x44                            # 温湿度センサSHT31のI2Cアドレス
 
 from machine import Pin,I2C             # ライブラリmachineのI2Cを組み込む
@@ -29,29 +36,25 @@ def rn4020(s = ''):                     # BLE RN4020との通信用の関数を�
         print('<',rx.strip())           # 受信結果を表示する
         sleep(0.1)                      # 0.1秒の待ち時間処理
 
-led = Pin(25, Pin.OUT)                  # GPIO出力用インスタンスledを生成
+led = Pin("LED", Pin.OUT)                       # Pico W LED用ledを生成
 gnd = Pin(6, Pin.OUT)                   # GP6をSHT31のGNDピンに接続
 gnd.value(0)                            # GND用に0Vを出力
 vdd = Pin(3, Pin.OUT)                   # GP3をSHT31のV+ピンに接続
 vdd.value(1)                            # V+用に3.3Vを出力
 i2c = I2C(0, scl=Pin(5), sda=Pin(4))    # GP5をSHT31のSCL,GP4をSDAに接続
 
-uart = UART(0, 115200, bits=8, parity=None, stop=1) # シリアルuartを生成
-rn4020('V')                             # バージョン情報表示
-rn4020('SF,2')                          # 全設定の初期化
-sleep(0.5)                              # リセット待ち(1秒)
-rn4020()                                # 応答表示
-rn4020('SR,20000000')                   # 機能設定:アドバタイジング
-rn4020('SS,00000001')                   # サービス設定:ユーザ定義
-rn4020('SN,RN4020_HUMID')               # デバイス名:RN4020_HUMID
-rn4020('R,1')                           # RN4020を再起動
-sleep(3)                                # リセット後にアドバタイジング開始
-rn4020('D')                             # 情報表示
-rn4020('Y')                             # アドバタイジング停止
+wlan = network.WLAN(network.STA_IF)             # 無線LAN用のwlanを生成
+wlan.active(True)                               # 無線LANを起動
+wlan.connect(SSID, PASS)                        # 無線LANに接続
+while wlan.status() != 3:                       # 接続待ち
+    print('.', end='')                          # 接続中表示
+    led.toggle()
+    sleep(1)
+ifconf = wlan.ifconfig()
+print('\n',ifconf)
 
 temp = 0.                               # 温度値を保持する変数tempを生成
 hum  = 0.                               # 湿度値を保持する変数humを生成
-payload = 0x00000000                    # 送信データを保持する変数を生成
 while True:                             # 繰り返し処理
     i2c.writeto_mem(sht31,0x24,b'\x00') # SHT31にコマンド0x2400を送信する
     # i2c.writeto(sht31,b'\x24\x00')    # SHT31仕様に合わせた2バイト送信表記
@@ -61,15 +64,24 @@ while True:                             # 繰り返し処理
         temp = float((data[0]<<8) + data[1]) / 65535. * 175. - 45.
         hum  = float((data[3]<<8) + data[4]) / 65535. * 100.
         payload = (data[1]<<24) + (data[0]<<16) + (data[4]<<8) + data[3]
-    s = str(round(temp,1))              # 小数点第1位で丸めた結果を文字列に
-    print('Temperature =',s)            # 温度値を表示
-    s = str(round(hum,1))               # 小数点第1位で丸めた結果を文字列に
-    print('Humidity =',s)               # 湿度値を表示
-    s = ble_ad_id + '{:08X}'.format(payload)  # BLE送信データ(16進数に変換)
+    temp_s = str(round(temp,1))         # 小数点第1位で丸めた結果を文字列に
+    print('Temperature =',temp_s)       # 温度値を表示
+    hum_s = str(round(hum,1))           # 小数点第1位で丸めた結果を文字列に
+    print('Humidity =',hum_s)           # 湿度値を表示
     led.value(1)                        # LEDをONにする
-    rn4020('N,' + s)                    # データをブロードキャスト情報に設定
-    rn4020('A,0064,00C8')               # 0.1秒間隔で0.2秒間のアドバタイズ
-    sleep(0.1)                          # 0.1秒間の待ち時間処理
-    rn4020('Y')                         # アドバタイジング停止
+
+    sock = usocket.socket(usocket.AF_INET,usocket.SOCK_DGRAM) # μソケット作成
+    #      ~~~~~~~        ~~~~~~~         ~~~~~~~
+    udp_s = device_s + ', ' + temp_s    # 表示用の文字列変数udp
+    udp_s += ',' + hum_s
+    print('send :', udp_s)                      # 受信データを出力
+    udp_bytes = (udp_s + '\n').encode()         # バイト列に変換
+
+    try:
+        sock.sendto(udp_bytes,(udp_to,udp_port)) # UDPブロードキャスト送信
+    except Exception as e:                      # 例外処理発生時
+        print(e)                                # エラー内容を表示
+    sock.close()                                # ソケットの切断
+
     led.value(0)                        # LEDをOFFにする
-    sleep(5)                            # 5秒間の待ち時間処理
+    sleep(interval)                             # 送信間隔用の待ち時間処理
