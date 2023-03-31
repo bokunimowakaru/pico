@@ -1,21 +1,7 @@
 ###############################################################################
-# Raspberry Pi Pico W + 湿度センサ SHT31 for Ambient [無線LAN対応版]
-#                                             Copyright (c) 2023 Wataru KUNINO
+# IoT温度センサ for Raspberry Pi Pico W [Ambient対応] [無線LAN対応]
+#                                       Copyright (c) 2019 - 2023 Wataru KUNINO
 ###############################################################################
-
-# coding: utf-8
-# IoT連携 Ambientへ送信 HTTP POST μrequests for MicroPython (μrequests使用)
-# Copyright (c) 2019 Wataru KUNINO
-
-# ご注意：ESP32マイコンのWi-FiをONにします。
-# 　　　　使い方を誤ると、電波法に違反する場合があります。
-# 　　　　作成者は一切の責任を負いません。
-
-# インストール方法
-# (1) wifi_ssidとwifi_pass、ambient_chid、ambient_wkeyの4項目を設定する
-# (2) プログラム末尾のdeepsleepを有効にする（#を消してインデントを無くす）
-# (3) ファイル名をmain.pyに変更する
-# (4) WebREPLで転送する
 
 SSID = "1234ABCD"                               # 無線LANアクセスポイント SSID
 PASS = "password"                               # パスワード
@@ -64,5 +50,7 @@ while True:                                     # 繰り返し処理
 ###############################################################################
 # 引用コード
 ''' 
+    # IoT連携 Ambientへ送信 HTTP POST μrequests for MicroPython (μrequests使用)
+    # Copyright (c) 2019 Wataru KUNINO
     https://github.com/bokunimowakaru/iot/blob/master/micropython/esp32/test_htpost_ambient.py
 '''
