@@ -1,5 +1,7 @@
+###############################################################################
 # Raspberry Pi Pico W の動作確認 温度を測定し表示する
-# Copyright (c) 2021-2023 Wataru KUNINO
+#                                         Copyright (c) 2021-2023 Wataru KUNINO
+###############################################################################
 
 from machine import ADC,Pin             # ライブラリmachineのADCを組み込む
 from utime import sleep                 # μtimeからsleepを組み込む
@@ -18,3 +20,22 @@ while True:                             # 繰り返し処理
         led.value(0)                    # LEDを消灯する
     prev = temp                         # 変数prevに前回値を保持する
     sleep(5)                            # 5秒間の待ち時間処理
+
+###############################################################################
+# 参考文献 1
+'''
+    ラズベリー・パイでI/O制御 & Pico，micro:bit，STM32でクラウド通信
+    Pythonで作るIoTシステム プログラム・サンプル集
+    第9章 ラズベリー・パイ Pico で BLEワイヤレス・センサを作る
+'''
+###############################################################################
+# 参考文献 2
+'''
+    Pico W のLED 使用方法
+    https://forums.raspberrypi.com/viewtopic.php?t=336836
+'''
+###############################################################################
+# 引用コード
+''' 
+    https://github.com/bokunimowakaru/iot/blob/master/micropython/raspi-pico/example02_temp.py
+'''

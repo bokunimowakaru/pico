@@ -1,6 +1,7 @@
-# coding: utf-8
+###############################################################################
 # IoT 温度計μ for Raspberry Pi Pico W [無線LAN対応版]
-# Copyright (c) 2018-2023 Wataru KUNINO
+#                                         Copyright (c) 2018-2023 Wataru KUNINO
+###############################################################################
 
 SSID = "1234ABCD"                               # 無線LANアクセスポイント SSID
 PASS = "password"                               # パスワード
@@ -23,11 +24,11 @@ adc = ADC(4)                                    # 温度センサ用adcを生成
 wlan = network.WLAN(network.STA_IF)             # 無線LAN用のwlanを生成
 wlan.active(True)                               # 無線LANを起動
 wlan.connect(SSID, PASS)                        # 無線LANに接続
-while wlan.status() != 3:                       # 接続待ち
+while not wlan.isconnected():                   # 接続待ち
     print('.', end='')                          # 接続中表示
     led.toggle()                                # LEDの点灯／非点灯の反転
     sleep(1)                                    # 1秒間の待ち時間処理
-print('\n',wlan.ifconfig())                     # 無線LANの状態を表示
+print(wlan.ifconfig()[0])                       # IPアドレスを表示
 
 while True:                                     # 繰り返し処理
     val = adc.read_u16()                        # ADC値を取得して変数valに代入
@@ -39,7 +40,6 @@ while True:                                     # 繰り返し処理
     led.value(1)                                # LEDをONにする
 
     sock = usocket.socket(usocket.AF_INET,usocket.SOCK_DGRAM) # μソケット作成
-    #      ~~~~~~~        ~~~~~~~         ~~~~~~~
     udp_s = device_s + ', ' + str(temp_i)       # 表示用の文字列変数udp
     print('send :', udp_s)                      # 受信データを出力
     udp_bytes = (udp_s + '\n').encode()         # バイト列に変換
@@ -53,12 +53,22 @@ while True:                                     # 繰り返し処理
     led.value(0)                                # LEDをOFFにする
     sleep(interval)                             # 送信間隔用の待ち時間処理
 
+###############################################################################
+# 参考文献 1
 '''
-参考文献
-
-Pico W のLED 使用方法
-	https://forums.raspberrypi.com/viewtopic.php?t=336836
-
-Error ENOMEM や EADDRINUSE が出た場合はハードウェアリセットを実行してください
-	machine.reset()
+    ラズベリー・パイでI/O制御 & Pico，micro:bit，STM32でクラウド通信
+    Pythonで作るIoTシステム プログラム・サンプル集
+    第9章 ラズベリー・パイ Pico で BLEワイヤレス・センサを作る
+'''
+###############################################################################
+# 参考文献 2
+'''
+    Pico W のLED 使用方法
+    https://forums.raspberrypi.com/viewtopic.php?t=336836
+'''
+###############################################################################
+# 引用コード
+''' 
+    https://github.com/bokunimowakaru/iot/blob/master/micropython/raspi-pico/example03_rn4020.py
+    https://github.com/bokunimowakaru/iot/blob/master/micropython/nucleo-f767zi/iot_temp_u.py
 '''

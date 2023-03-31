@@ -1,5 +1,7 @@
+###############################################################################
 # Raspberry Pi Pico W + 湿度センサ SHT31  [無線LAN対応版]
-# Copyright (c) 2021-2023 Wataru KUNINO
+#                                         Copyright (c) 2021-2023 Wataru KUNINO
+###############################################################################
 
 # 温湿度センサ AE-SHT31 ピン接続図
 ##############################
@@ -38,11 +40,11 @@ i2c = I2C(0, scl=Pin(5), sda=Pin(4))            # GP5をSHT31のSCL,GP4をSDAに
 wlan = network.WLAN(network.STA_IF)             # 無線LAN用のwlanを生成
 wlan.active(True)                               # 無線LANを起動
 wlan.connect(SSID, PASS)                        # 無線LANに接続
-while wlan.status() != 3:                       # 接続待ち
+while not wlan.isconnected():                   # 接続待ち
     print('.', end='')                          # 接続中表示
     led.toggle()                                # LEDの点灯／非点灯の反転
     sleep(1)                                    # 1秒間の待ち時間処理
-print('\n',wlan.ifconfig())                     # 無線LANの状態を表示
+print(wlan.ifconfig()[0])                       # IPアドレスを表示
 
 temp = 0.                                       # 温度値を保持する変数tempを生成
 hum  = 0.                                       # 湿度値を保持する変数humを生成
@@ -75,3 +77,17 @@ while True:                                     # 繰り返し処理
 
     led.value(0)                                # LEDをOFFにする
     sleep(interval)                             # 送信間隔用の待ち時間処理
+
+###############################################################################
+# 参考文献 1
+'''
+    ラズベリー・パイでI/O制御 & Pico，micro:bit，STM32でクラウド通信
+    Pythonで作るIoTシステム プログラム・サンプル集
+    第9章 ラズベリー・パイ Pico で BLEワイヤレス・センサを作る
+'''
+###############################################################################
+# 引用コード
+''' 
+    https://github.com/bokunimowakaru/iot/blob/master/micropython/raspi-pico/example04_humid.py
+    https://github.com/bokunimowakaru/iot/blob/master/micropython/nucleo-f767zi/iot_temp_u.py
+'''
