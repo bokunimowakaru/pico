@@ -48,10 +48,15 @@ def i2c_lcd_out(y, text):
 i2c_lcd_out(0,'ex05 LCD')                       # タイトルをLCDに表示
 i2c_lcd_out(1,'UDP Logr')                       # Send a string to LCD
 
-eth = network.Ethernet()                        # Ethernet用のethを生成
+wlan = network.WLAN(network.STA_IF)             # 無線LAN用のwlanを生成
+wlan.active(True)                               # 無線LANを起動
+wlan.connect(SSID, PASS)                        # 無線LANに接続
+while not wlan.isconnected():                   # 接続待ち
+    print('.', end='')                          # 接続中表示
+    led.toggle()                                # LEDの点灯／非点灯の反転
+    sleep(1)                                    # 1秒間の待ち時間処理
+print(wlan.ifconfig()[0])                       # IPアドレスを表示
 try:
-    eth.active(True)                            # Ethernetを起動
-    eth.ifconfig('dhcp')                        # DHCPクライアントを設定
     sock=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)# ソケットを作成
     sock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)    # オプション
     sock.bind(('',port))                        # ソケットに接続
