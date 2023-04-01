@@ -35,7 +35,7 @@ gnd = Pin(6, Pin.OUT)                           # GP6をSHT31のGNDピンに接�
 gnd.value(0)                                    # GND用に0Vを出力
 vdd = Pin(3, Pin.OUT)                           # GP3をSHT31のV+ピンに接続
 vdd.value(1)                                    # V+用に3.3Vを出力
-i2c = I2C(0, scl=Pin(5), sda=Pin(4))            # GP5をSHT31のSCL,GP4をSDAに接続
+i2c = I2C(0, scl=Pin(5), sda=Pin(4))            # GP5をSHT31のSCLに,GP4をSDAに
 
 wlan = network.WLAN(network.STA_IF)             # 無線LAN用のwlanを生成
 wlan.active(True)                               # 無線LANを起動
@@ -46,20 +46,20 @@ while not wlan.isconnected():                   # 接続待ち
     sleep(1)                                    # 1秒間の待ち時間処理
 print(wlan.ifconfig()[0])                       # IPアドレスを表示
 
-temp = 0.                                       # 温度値を保持する変数tempを生成
-hum  = 0.                                       # 湿度値を保持する変数humを生成
+temp = 0.                                       # 温度値用の変数tempを生成
+hum  = 0.                                       # 湿度値用の変数humを生成
 while True:                                     # 繰り返し処理
-    i2c.writeto_mem(sht31,0x24,b'\x00')         # SHT31にコマンド0x2400を送信する
-    # i2c.writeto(sht31,b'\x24\x00')            # SHT31仕様に合わせた2バイト送信表記
+    i2c.writeto_mem(sht31,0x24,b'\x00')         # SHT31にコマンド0x2400を送信
+    # i2c.writeto(sht31,b'\x24\x00')            # SHT31仕様に合わせた2バイト表記
     sleep(0.018)                                # SHT31の測定待ち時間
     data = i2c.readfrom_mem(sht31,0x00,6)       # SHT31から測定値6バイトを受信
     if len(data) >= 5:                          # 受信データが5バイト以上の時
         temp = float((data[0]<<8) + data[1]) / 65535. * 175. - 45.
         hum  = float((data[3]<<8) + data[4]) / 65535. * 100.
         payload = (data[1]<<24) + (data[0]<<16) + (data[4]<<8) + data[3]
-    temp_s = str(round(temp,1))                 # 小数点第1位で丸めた結果を文字列に
+    temp_s = str(round(temp))                   # 整数に丸めて文字列に変換
     print('Temperature =',temp_s,end=', ')      # 温度値を表示
-    hum_s = str(round(hum,1))                   # 小数点第1位で丸めた結果を文字列に
+    hum_s = str(round(hum,1))                   # 小数点第1位で丸めて文字列に
     print('Humidity =',hum_s)                   # 湿度値を表示
     sleep(0.1)                                  # シリアル出力の完了待ち
     led.value(1)                                # LEDをONにする
