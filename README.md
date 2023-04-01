@@ -1,9 +1,7 @@
 # pico
 
-## Wireless Communication Code Examples for Raspberry Pi Pico W, by [bokunimo.net](https://bokunimo.net/) 
-
-This repository is a collection of Wireless Communication Code Examples. 
-It includes devices which send sensor values via UDP, and a LCD device which receives from them to display the sensor values on it.  
+This repository "Wireless Communication Code Examples for Raspberry Pi Pico W, by [bokunimo.net](https://bokunimo.net/)" is a collection of Wireless Communication Code Examples.  
+It includes MicroPython code for the micro IoT sensor devices which send sensor values via UDP and a micro LCD device which receives from them to display the sensor values on it.  
 
 ## ボクにもわかる μIoT for Raspberry Pi Pico W 		
 
