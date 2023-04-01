@@ -1,5 +1,5 @@
 ###############################################################################
-# IoT温度センサ for Raspberry Pi Pico W [Ambient対応] [無線LAN対応]
+# μIoT 温度計 for Raspberry Pi Pico W [Ambient対応] [無線LAN対応]
 # 温度値を Ambient (https://ambidata.io/) に送信します。
 #                                       Copyright (c) 2019 - 2023 Wataru KUNINO
 ###############################################################################
