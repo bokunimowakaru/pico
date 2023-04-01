@@ -1,5 +1,6 @@
 ###############################################################################
 # IoT 温度計μ for Raspberry Pi Pico W [無線LAN対応版]
+# 温度値を10秒おきにUDPで送信します
 #                                         Copyright (c) 2018-2023 Wataru KUNINO
 ###############################################################################
 
@@ -13,7 +14,6 @@ interval = 10                                   # 送信間隔（秒）
 temp_offset = 8.0                               # CPU温度上昇値(要調整)
 
 from machine import ADC,Pin                     # machineからADCを組み込む
-from machine import lightsleep                  # lightsleepを組み込む
 from utime import sleep                         # μtimeからsleepを組み込む
 import network                                  # ネットワーク通信
 import usocket                                  # μソケット通信
@@ -49,9 +49,8 @@ while True:                                     # 繰り返し処理
     except Exception as e:                      # 例外処理発生時
         print(e)                                # エラー内容を表示
     sock.close()                                # ソケットの切断
-
     led.value(0)                                # LEDをOFFにする
-    lightsleep(interval*1000)                   # 送信間隔用の待ち時間処理
+    sleep(interval)                             # 送信間隔用の待ち時間処理
 
 ###############################################################################
 # 参考文献 1 Pythonで作るIoTシステム プログラム・サンプル集 (CQ出版社)
@@ -66,12 +65,7 @@ while True:                                     # 繰り返し処理
     https://bokunimo.net/iot/cq/esp32.pdf
 '''
 ###############################################################################
-# 参考文献 3 Raspberry Pi Pico のシリアルCOMが表示されないときの修復方法
-'''
-    https://bokunimo.net/blog/raspberry-pi/1460/
-'''
-###############################################################################
-# 参考文献 4 Pico W のLED 使用方法
+# 参考文献 3 Pico W のLED 使用方法
 '''
     https://forums.raspberrypi.com/viewtopic.php?t=336836
 '''

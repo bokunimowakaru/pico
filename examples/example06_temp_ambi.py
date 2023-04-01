@@ -1,5 +1,6 @@
 ###############################################################################
 # IoT温度センサ for Raspberry Pi Pico W [Ambient対応] [無線LAN対応]
+# 温度値を Ambient (https://ambidata.io/) に送信します。
 #                                       Copyright (c) 2019 - 2023 Wataru KUNINO
 ###############################################################################
 
@@ -43,7 +44,7 @@ while True:                                     # 繰り返し処理
         print(' HTTP Stat =', res.status_code)
     except Exception as e:                      # 例外処理発生時
         print(e)                                # エラー内容を表示
-    res.close()
+    res.close()                                 # ソケットの切断
     led.value(0)                                # LEDを消灯
     lightsleep(30000)                           # 送信間隔用の待ち時間処理
 

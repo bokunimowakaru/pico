@@ -1,5 +1,6 @@
 ###############################################################################
-# Raspberry Pi Pico W + 湿度センサ SHT31  [無線LAN対応版]
+# Raspberry Pi Pico W + 温湿度センサ SHT31  [無線LAN対応版]
+# 温度と湿度を10秒おきにUDPで送信します
 #                                         Copyright (c) 2021-2023 Wataru KUNINO
 ###############################################################################
 
@@ -16,7 +17,6 @@
 
 SSID = "1234ABCD"                               # 無線LANアクセスポイント SSID
 PASS = "password"                               # パスワード
-
 udp_to = '255.255.255.255'                      # UDPブロードキャスト
 udp_port = 1024                                 # UDPポート番号
 device_s = 'humid_3'                            # デバイス識別名
@@ -58,15 +58,16 @@ while True:                                     # 繰り返し処理
         hum  = float((data[3]<<8) + data[4]) / 65535. * 100.
         payload = (data[1]<<24) + (data[0]<<16) + (data[4]<<8) + data[3]
     temp_s = str(round(temp,1))                 # 小数点第1位で丸めた結果を文字列に
-    print('Temperature =',temp_s)               # 温度値を表示
+    print('Temperature =',temp_s,end=', ')      # 温度値を表示
     hum_s = str(round(hum,1))                   # 小数点第1位で丸めた結果を文字列に
     print('Humidity =',hum_s)                   # 湿度値を表示
+    sleep(0.1)                                  # シリアル出力の完了待ち
     led.value(1)                                # LEDをONにする
 
     sock = usocket.socket(usocket.AF_INET,usocket.SOCK_DGRAM) # μソケット作成
     udp_s = device_s + ', ' + temp_s            # 表示用の文字列変数udp
     udp_s += ',' + hum_s
-    print('send :', udp_s)                      # 受信データを出力
+    # print('send :', udp_s)                    # 受信データを出力
     udp_bytes = (udp_s + '\n').encode()         # バイト列に変換
 
     try:
@@ -74,7 +75,6 @@ while True:                                     # 繰り返し処理
     except Exception as e:                      # 例外処理発生時
         print(e)                                # エラー内容を表示
     sock.close()                                # ソケットの切断
-
     led.value(0)                                # LEDをOFFにする
     lightsleep(interval*1000)                   # 送信間隔用の待ち時間処理
 
