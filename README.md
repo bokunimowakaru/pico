@@ -22,12 +22,16 @@ MicroPython を使った Raspberry Pi Pico W の学習用サンプル・プロ�
 本稿の基となる MicroPython 用プログラムは、「Pythonで作るIoTシステム プログラム・サンプル集 (CQ出版社)」の第8章～第9章で解説しています。  
 
 ### CQ出版社の販売サイト：  
+
+Pythonで作るIoTシステム プログラム・サンプル集  
 https://shop.cqpub.co.jp/hanbai/books/MTR/MTRZ202112.html  
 - 目次などが紹介されています。  
 - クレジットカード支払いの場合、送料無料です。  
 - The Book Written in Japanese Language  
 
 ### 筆者サポートサイト：  
+
+Pythonで作るIoTシステム プログラム・サンプル集  
 https://bokunimo.net/iot/cq/  
 
 ----------------------------------------------------------------
