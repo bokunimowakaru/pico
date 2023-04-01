@@ -9,12 +9,23 @@ It includes devices which send sensor values via UDP, and a LCD device which rec
 
 MicroPython を使った Raspberry Pi Pico W の学習用サンプル・プログラム集です。
 
+![Raspberry Pi Pico W](https://bokunimo.net/blog/wp-content/uploads/2023/04/DSC_2562wide.jpg)
+
 ## bokunimo.net Blog Site
 
 - 解説ページ(bokunimo.netのブログ内)：  
 	[https://bokunimo.net/blog/raspberry-pi/3494](https://bokunimo.net/blog/raspberry-pi/3494)  
 - Google Transrate to English：  
 	[https://bokunimo.net/blog/raspberry-pi/3494](https://bokunimo-net.translate.goog/blog/raspberry-pi/3494/?_x_tr_sl=ja&_x_tr_tl=en)  
+
+The picture below is a example of a micro IoT sensor on a breadboard.  
+
+![μIoT 温湿度計](https://bokunimo.net/blog/wp-content/uploads/2023/04/DSC_0048wide.jpg)  
+
+Following picture is the receiver for the above board. The sensor values which send from the micro IoT Sensors are displayed on the LCD.  
+
+![μIoT LCD](https://bokunimo.net/blog/wp-content/uploads/2023/04/DSC_0034wide.jpg)  
+
 
 --------------------------------------------------------------------------------
 ## 関連書籍
