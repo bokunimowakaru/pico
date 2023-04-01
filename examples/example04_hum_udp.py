@@ -25,7 +25,7 @@ interval = 10                                   # 送信間隔（秒）
 sht31 = 0x44                                    # 温湿度センサSHT31のI2Cアドレス
 
 from machine import Pin,I2C                     # machineのI2Cを組み込む
-from machine import UART                        # machineからUARTを組み込む
+from machine import lightsleep                  # lightsleepを組み込む
 from utime import sleep                         # μtimeからsleepを組み込む
 import network                                  # ネットワーク通信
 import usocket                                  # μソケット通信
@@ -76,17 +76,27 @@ while True:                                     # 繰り返し処理
     sock.close()                                # ソケットの切断
 
     led.value(0)                                # LEDをOFFにする
-    sleep(interval)                             # 送信間隔用の待ち時間処理
+    lightsleep(interval*1000)                   # 送信間隔用の待ち時間処理
 
 ###############################################################################
-# 参考文献 1
+# 参考文献 1 Pythonで作るIoTシステム プログラム・サンプル集 (CQ出版社)
+#            (ラズベリー・パイでI/O制御 & Pico，micro:bit，STM32でクラウド通信)
 '''
-    ラズベリー・パイでI/O制御 & Pico，micro:bit，STM32でクラウド通信
-    Pythonで作るIoTシステム プログラム・サンプル集
+    https://www.amazon.co.jp/dp/4789859894
     第9章 ラズベリー・パイ Pico で BLEワイヤレス・センサを作る
 '''
 ###############################################################################
-# 引用コード
+# 参考文献 2 ESP32 マイコン用 MicroPython プログラム
+'''
+    https://bokunimo.net/iot/cq/esp32.pdf
+'''
+###############################################################################
+# 参考文献 3 Raspberry Pi Pico のシリアルCOMが表示されないときの修復方法
+'''
+    https://bokunimo.net/blog/raspberry-pi/1460/
+'''
+###############################################################################
+# 引用コード 本プログラムは下記のコードを変更して作成したものです
 ''' 
     https://github.com/bokunimowakaru/iot/blob/master/micropython/raspi-pico/example04_humid.py
     https://github.com/bokunimowakaru/iot/blob/master/micropython/nucleo-f767zi/iot_temp_u.py
