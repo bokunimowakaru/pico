@@ -8,9 +8,10 @@
 ##############################
 # aqm0802 # Pico # GPIO
 ##############################
-#     +V  #  5   # GP3
-#    SDA  #  6   # GP4
-#    SCL  #  7   # GP5
+#     +V  #  4   # GP2
+#  RESET  #  5   # GP3
+#    SCL  #  6   # GP4 (標準はSDAだがSCLで使用)
+#    SDA  #  7   # GP5 (通常はSCLだがSDAで使用)
 #    GND  #  8   # GND
 ##############################
 
@@ -26,9 +27,13 @@ from machine import Pin,I2C                     # ライブラリmachineのI2C�
 from utime import sleep                         # μtimeからsleepを組み込む
 
 led = Pin("LED", Pin.OUT)                       # Pico W LED用インスタンスledを生成
-vdd = Pin(3, Pin.OUT)                           # GP3をaqm0802のV+ピンに接続
+rst = Pin(3, Pin.OUT)                           # GP3をaqm0802のRESETに接続
+rst.value(0)                                    # RESETに0Vを出力
+vdd = Pin(2, Pin.OUT)                           # GP2をaqm0802のV+ピンに接続
 vdd.value(1)                                    # V+用に3.3Vを出力
-i2c = I2C(0, scl=Pin(5), sda=Pin(4))            # GP5をaqm0802のSCL,GP4をSDAに接続
+i2c = I2C(0, scl=Pin(4), sda=Pin(5))            # GP4をaqm0802のSCL,GP5をSDAに接続
+sleep(0.2);                                     # RESET待機
+rst.value(1)                                    # RESETに3.3Vを出力
 i2c.writeto_mem(aqm0802, 0x00, b'\x39')         # IS=1
 i2c.writeto_mem(aqm0802, 0x00, b'\x11')         # OSC
 i2c.writeto_mem(aqm0802, 0x00, b'\x70')         # コントラスト  0
