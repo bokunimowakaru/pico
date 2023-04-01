@@ -14,6 +14,7 @@ temp_offset = 8.0                               # CPU温度上昇値(要調整)
 
 from machine import ADC,Pin                     # machineからADCを組み込む
 from machine import UART                        # machineからUARTを組み込む
+from machine import lightsleep                  # lightsleepを組み込む
 from utime import sleep                         # μtimeからsleepを組み込む
 import network                                  # ネットワーク通信
 import usocket                                  # μソケット通信
@@ -51,7 +52,7 @@ while True:                                     # 繰り返し処理
     sock.close()                                # ソケットの切断
 
     led.value(0)                                # LEDをOFFにする
-    sleep(interval)                             # 送信間隔用の待ち時間処理
+    lightsleep(interval*1000)                             # 送信間隔用の待ち時間処理
 
 ###############################################################################
 # 参考文献 1
