@@ -1,6 +1,6 @@
 # pico
 
-This repository "Wireless Communication Code Examples for Raspberry Pi Pico W, by [bokunimo.net](https://bokunimo.net/)" is a collection of Wireless Communication Code Examples.  
+This repository "Wireless Communication Code Examples for Raspberry Pi Pico W, by [bokunimo.net](https://bokunimo.net/)" is a collection of the code examples.  
 It includes MicroPython code for the micro IoT sensor devices which send sensor values via UDP and a micro LCD device which receives from them to display the sensor values on it.  
 
 ## ボクにもわかる μIoT for Raspberry Pi Pico W 		
@@ -8,6 +8,28 @@ It includes MicroPython code for the micro IoT sensor devices which send sensor 
 MicroPython を使った Raspberry Pi Pico W の学習用サンプル・プログラム集です。
 
 ![Raspberry Pi Pico W](https://bokunimo.net/blog/wp-content/uploads/2023/04/DSC_2562wide.jpg)
+
+* example01_hello.py  
+	LED Control Example Code for Learning MicroPython  
+	Raspberry Pi Pico W の動作確認 Lチカ＋ログ出力表示  
+* example02_temp.py  
+	Get Value of Internal CPU Temperature Sensor  
+	温度を測定してシリアルモニタに表示  
+* example03_temp_udp.py  
+	Micro IoT Transmitter for Temperature Sensor  
+	μIoT 温度計; 温度をUDPで送信  
+* example04_hum_udp.py  
+	Micro IoT Transmitter for Humidity Sensor  
+	μIoT 温湿度計; 温度と湿度をUDPで送信  
+* example05_lcd_udp.py  
+	Micro IoT LCD Monitor for Micro IoT Sensors  
+	UDPを受信してLCDに表示  
+* example05_lcd_udp_pg.py  
+	Added Ping Function to example05_lcd_udp  
+	UDPを受信してLCDに表示(Ping併用版)  
+* example06_temp_ambi.py  
+	Micro IoT Transmitter using HTTP Client  
+	温度値を [Ambient](https://ambidata.io/) に送信  
 
 ## bokunimo.net Blog Site
 
@@ -23,7 +45,6 @@ The picture below is a example of a micro IoT sensor on a breadboard.
 Following picture is the receiver for the above board. The sensor values which send from the micro IoT Sensors are displayed on the LCD.  
 
 ![μIoT LCD](https://bokunimo.net/blog/wp-content/uploads/2023/04/DSC_0034wide.jpg)  
-
 
 --------------------------------------------------------------------------------
 ## 関連書籍
