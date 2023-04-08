@@ -42,9 +42,16 @@ The picture below is a example of a micro IoT sensor on a breadboard.
 
 ![μIoT 温湿度計](https://bokunimo.net/blog/wp-content/uploads/2023/04/DSC_0048wide.jpg)  
 
-Following picture is the receiver for the above board. The sensor values which send from the micro IoT Sensors are displayed on the LCD.  
+Following picture is the receiver for the above board.  
 
 ![μIoT LCD](https://bokunimo.net/blog/wp-content/uploads/2023/04/DSC_0034wide.jpg)  
+
+The sensor values which send from the micro IoT Sensors are displayed on the LCD.  
+
+![CSVxUDP](https://bokunimo.net/blog/wp-content/uploads/2023/04/DSC_2567wide.jpg)  
+
+A communication protocol [CSVxUDP](https://git.bokunimo.com/udp/) is used for them. If your LCD device cannot recieve UDP packets, it might be discarded by your Wi-Fi router. In this case, please try to use "example05_lcd_udp_pg.py".  
+Or if there are someting wrong in the broadcasted UDP behaviors, use unicast address such as "192.168.1.1" for transmitter side of example03_temp_udp.py and example04_hum_udp.py.  
 
 --------------------------------------------------------------------------------
 ## 関連書籍
