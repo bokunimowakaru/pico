@@ -8,31 +8,67 @@
 #    SCL  #  7   # GP5
 ##############################
 
-#01234567
-disp = [\
-' Hello! ',\
-' RasPi  ',\
-'        ',\
-'OLED Lib',\
-'  for   ',\
-'uPython ',\
-'        ',\
-'https://',\
-'git.boku',\
-'nimo.com',\
-'/pico/  ',\
-'        ',\
-'        ',\
-'   by   ',\
-' Wataru ',\
-' KUNINO ',\
+#01234567  #01234567  #01234567  #01234567
+disp_port = [\
+' Hello! ',' RasPi  ','        ','OLED Lib',\
+'  for   ','uPython ','        ','https://',\
+'git.boku','nimo.com','/pico/  ','        ',\
+'        ','   by   ',' Wataru ',' KUNINO ',\
+]
+
+#0123456789ABCDEF  #0123456789ABCDEF
+disp_land = [\
+'  Hello! RasPi  ','    OLED Lib    ',\
+'for MicroPython ','                ',\
+'https://git.boku','nimo.com/pico/  ',\
+'                ','by Wataru KUNINO',\
 ]
 
 sd1306 = 0x3C                          # OLED SD1306のI2Cアドレス
 d_mode_i = 0x00
 d_mode_w = 0x40
-d_init = b'\xAE\xD5\x80\x8D\x14\x20\x00\xDA\x12\x81\xCF\xD9\xF1\xDB\x40\xA4\xA6\xAF'
-d_font = b'\
+d_init = b'\xAE\xD5\x80\x8D\x14\x20\x00\xDA\x12\x81\x00\xD9\xF1\xDB\x40\xA4\xA6\xAF'
+d_home = b'\x21\x00\x7F\x22\x00\x07'
+
+from machine import Pin,I2C             # ライブラリmachineのI2Cを組み込む
+from utime import sleep                 # μtimeからsleepを組み込む
+
+def main():
+    d_font = load_font()
+    print("loaded font len =",len(d_font))
+
+    led = Pin("LED", Pin.OUT)               # Pico W LED用インスタンスledを生成
+    led.value(1)
+    vdd = Pin(3, Pin.OUT)                   # GP3をSD1306のV+ピンに接続
+    vdd.value(1)                            # V+用に3.3Vを出力
+    i2c = I2C(0, scl=Pin(5), sda=Pin(4))    # GP5をSD1306のSCL,GP4をSDAに接続
+    i2c.writeto_mem(sd1306, d_mode_i, d_init) 
+    i2c.writeto_mem(sd1306, d_mode_i, d_home)
+    for x in range(8)[::-1]:
+        for y in range(16):
+            i = ord(disp_port[y][x]) - 32
+            if i > 0 and i*8+8 <= len(d_font):
+                i2c.writeto_mem(sd1306, d_mode_w, d_font[i*8:i*8+8])
+            else:
+                i2c.writeto_mem(sd1306, d_mode_w, d_font[0:8]) 
+    sleep(3)
+    for y in range(8)[::-1]:
+        for x in range(16)[::-1]:
+            i = ord(disp_land[y][x]) - 32
+            if i > 0 and i*8+8 <= len(d_font):
+                font = b''
+                for j in range(8):
+                    c = 0x00
+                    for k in range(8):
+                        c += ((d_font[i*8+7-k] >> j) & 0x01) << k
+                    font += c.to_bytes(1,'little')
+                i2c.writeto_mem(sd1306, d_mode_w, font)
+            else:
+                i2c.writeto_mem(sd1306, d_mode_w, d_font[0:8])
+    sleep(3)
+            
+def load_font():
+    return b'\
 \x00\x00\x00\x00\x00\x00\x00\x00\x10\x10\x10\x10\x10\x00\x10\x00\
 \xD8\x48\x90\x00\x00\x00\x00\x00\x14\x7E\x28\x28\x28\xFC\x50\x00\
 \x08\x3E\x48\x3C\x12\x7C\x10\x00\x42\xA4\x48\x10\x24\x4A\x84\x00\
@@ -81,26 +117,10 @@ d_font = b'\
 \x00\x00\x7C\x08\x10\x20\x7C\x00\x06\x08\x08\x10\x08\x08\x06\x00\
 \x10\x10\x10\x10\x10\x10\x10\x00\xC0\x20\x20\x10\x20\x20\xC0\x00\
 \xC0\x40\x80\x00\x00\x00\x00\x00'
-print("font len =",len(d_font))
-d_home = b'\x21\x00\x7F\x22\x00\x07'
 
-from machine import Pin,I2C             # ライブラリmachineのI2Cを組み込む
-from utime import sleep                 # μtimeからsleepを組み込む
+while True:
+    main()
 
-vdd = Pin(3, Pin.OUT)                   # GP3をSD1306のV+ピンに接続
-vdd.value(1)                            # V+用に3.3Vを出力
-i2c = I2C(0, scl=Pin(5), sda=Pin(4))    # GP5をSD1306のSCL,GP4をSDAに接続
-i2c.writeto_mem(sd1306, d_mode_i, d_init) 
-i2c.writeto_mem(sd1306, d_mode_i, d_home)
-for x in range(8)[::-1]:
-    for y in range(16):
-        i = ord(disp[y][x]) - 32
-        if i > 0 and i*8+8 <= len(d_font):
-            i2c.writeto_mem(sd1306, d_mode_w, d_font[i*8:i*8+8])
-        else:
-            i2c.writeto_mem(sd1306, d_mode_w, d_font[0:8]) 
-sleep(0.2);
-        
 ################################################################################
 # 参考文献 8×8 ドット日本語フォント「美咲フォント」
 # https://littlelimit.net/misaki.htm
@@ -158,7 +178,7 @@ OLED 初期化用 18 bytes
 	#07, #DA, SET COMPINS
 	#08, #12,     0x12
 	#09, #81, SET CONTRAST
-	#0A, #CF,     0x7F(defalt) -> 0xCF
+	#0A, #CF,     0x7F(defalt)
 	#0B, #D9, SET PRECHARGE PERIOD
 	#0C, #F1,     0x02(defalt) -> 0xF1
 	#0D, #DB, SET VCOM DETECT
