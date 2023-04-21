@@ -39,8 +39,6 @@ def main():
 
     led = Pin("LED", Pin.OUT)               # Pico W LED用インスタンスledを生成
     led.value(1)
-    vdd = Pin(3, Pin.OUT)                   # GP3をSD1306のV+ピンに接続
-    vdd.value(1)                            # V+用に3.3Vを出力
     i2c = I2C(0, scl=Pin(5), sda=Pin(4))    # GP5をSD1306のSCL,GP4をSDAに接続
     i2c.writeto_mem(sd1306, d_mode_i, d_init) 
     i2c.writeto_mem(sd1306, d_mode_i, d_home)
