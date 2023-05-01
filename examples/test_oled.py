@@ -1,4 +1,4 @@
-# Raspberry Pi の動作確認 I2C LCDに文字を表示する
+# Raspberry Pi の動作確認 I2C OLED SD1306 に文字を表示する
 # Copyright (c) 2023 Wataru KUNINO
 
 ##############################
