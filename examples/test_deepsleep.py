@@ -1,17 +1,24 @@
 ###############################################################################
 # Raspberry Pi Pico / Pico W の動作確認 Lチカ＋ログ出力表示
 ###############################################################################
-# 5秒おきにスリープ状態を推移します。推移時にLEDの点滅で状態変更を示します。
+# 内容
+# ・5秒おきにスリープ状態を推移します。推移時にLEDの点滅で状態変更を示します。
+# ・ディープスリープ復帰後はリセットがかかります。
+# ・プログラムを書き込んでいた場合は、リセット後にプログラムが再開します。
+# ・Wi-Fi機能をOFFにするとLED表示機能が動作しません。
 #
-# LED表示      Num.  スリープ状態
-# －－－－－    0    sleep (通常)
-# ･－･－･－･－  -    sleep (通常)
-# ･－－－－     1    lightsleep (ライトスリープ)
-# ･－･－･－･－  -    sleep (通常)
-# ･･－－－      2    deepsleep (ディープスリープ)
-# ･－･－･－･－  -    sleep (通常)
+# LED表示      Num.  スリープ状態                   継続時間
+# －－－－－    0    sleep (通常)                   5秒
+# ･－－－－     1    lightsleep (ライトスリープ)    5秒
+# ･･－－－      2    deepsleep (ディープスリープ)   5秒
 #
-#                                         Copyright (c) 2021-2023 Wataru KUNINO
+# 消費電流の測定結果例
+#
+# モデル名              sleep       lightsleep  deepsleep	Version
+# Raspberry Pi Pico W   19.4 mA      1.4 mA      1.4 mA		v1.23.0 2024-06-02
+# Raspberry Pi Pico 2	16.1 mA     16.0 mA     15.8 mA		v1.24.0-preview.201
+#
+#                                         Copyright (c) 2021-2024 Wataru KUNINO
 ###############################################################################
 
 from machine import Pin                 # ライブラリmachineのPinを組み込む
@@ -19,6 +26,8 @@ from machine import deepsleep,lightsleep
 from utime import sleep
 
 sleep_duration = 5                      # スリープ時間（秒）
+wifi = Pin(23, Pin.OUT)
+wifi.value(0)                           # Wi-Fi機能をOFF
 
 class sleepmode:
     num = 3
@@ -48,10 +57,6 @@ def led_disp(n):                        # LEDの点滅で数字を示す 0～9
             sleep(0.6 if n<=5 else 0.2) # n<=5 ? 0.6 : 0.2
         led.value(0)
         sleep(0.2)
-    if n<0 or n>9:
-        led.value(1)
-        sleep(0.6)
-        led.value(0)
     sleep(0.6)
 
 try:
@@ -61,12 +66,10 @@ except TypeError:
 
 for mode in range(sleepmode.num):
    led_disp(mode)                       # スリープ番号0～2をLEDの点滅で出力
-   goto_sleep(mode)
-   led_disp(-1)                         # LEDの点滅でスリープ終了を出力
-   sleep(5)
+   goto_sleep(mode)                     # スリープ番号0～2を実行
 
 ###############################################################################
-# 以下は実行されない
+# 以下は実行されない(使用方法例)
 mode = sleepmode.mode_deepsleep
 goto_sleep(mode)
 exit()
